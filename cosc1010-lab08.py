@@ -13,17 +13,23 @@
 # Floats should only have one decimal point in them 
 
 def number(num):
+    neg = False
+    num = str(num) # ensure all start at string
+    if "-" in num:
+        num.replace("-", "")
+        neg = True
     try:
         # Try to convert to integer
         final = int(num)
-        return final
     except ValueError:
         try:
             # Try to convert to float
             final = round(float(num),1)
-            return final
         except ValueError:
-            return False
+            final = False
+    if neg:
+        final = -abs(final)
+    return final
 
 print("*" * 75)
 
@@ -47,16 +53,16 @@ def slope(m, b, x_min, x_max):
     y = []      # initiate list
     m = number(m)
     b = number(b)
-    if m != False and b != False:
+    if (m == False and m != 0) or (b == False and b != 0):
+        print("Please enter valid numbers")
+        return False
+    else:
         try:
             x_min = int(x_min)
             x_max = int(x_max)
         except ValueError:
             print("Please input integers for your bounds")
             return False
-    else:
-        print("Please enter valid numbers")
-        return False
     
     if x_min <= x_max:
         for x in range(x_min, x_max + 1):       # add 1 to max such that x_max is included
@@ -119,7 +125,7 @@ def quad(a, b, c):
     b = number(b)
     c = number(c)
 
-    if a == False or b == False or c == False:
+    if (a == False and a != 0) or (b == False and b != 0) or (c == False and c != 0):
         print("Please enter valid numbers")
         return False
     else:
@@ -128,16 +134,22 @@ def quad(a, b, c):
         if discrim == False:
             print("The discriminant is negative")
             return False
+        elif (2*a) == 0:
+            print("Invalid 'a' value")
+            return False
         else:
             x1 = (-b + discrim)/(2*a)
             x2 = (-b - discrim)/(2*a)
             return x1, x2
 
-print("Input values to solve ax^2 + bx _+ c = 0, type 'exit' to quit. \n")
+print("Input values to solve ax^2 + bx + c = 0, type 'exit' to quit. \n")
 while True:
+    az = False
     a = input("Please input a value for a: ")
     if a.lower() == "exit":
         break
+    elif a == "0" or a == 0:
+        az = True
     b = input("Please input a value for b: ")
     if b.lower() == "exit":
         break
@@ -145,7 +157,10 @@ while True:
     if c.lower() == "exit":
         break
     
-    if quad(a, b, c) == False:
+    if az:
+        print("Please input a non-zero value for a")
+        print("Try again")
+    elif quad(a, b, c) == False:
         print("Try again")
     else:
         x1, x2 = quad(a, b, c)
